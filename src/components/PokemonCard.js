@@ -1,44 +1,36 @@
-import React, { useState, useEffect } from "react";
-import Card from "react-bootstrap/Card";
+import React, { useContext } from "react";
+import { Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { FavoritesContext } from "../FavoritesProvider";
 
-function PokemonCard(props) {
-  const [pokemonData, setPokemonData] = useState(null);
-  const { pokemonName } = props;
+function PokemonCard({ name, image }) {
+  const { addFavorite, favorites, removeFavorite } =
+    useContext(FavoritesContext);
 
-  useEffect(() => {
-    fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`)
-      .then((res) => res.json())
-      .then((data) => setPokemonData(data))
-      .catch((error) => console.log("Pokemon not found", error));
-  }, [pokemonName]);
+  const isFavorite = favorites.includes(name);
 
-  if (!pokemonData) {
-    return <div>Loading...</div>;
+  function handleToggleFavorite() {
+    if (isFavorite) {
+      removeFavorite(name);
+    } else {
+      addFavorite(name);
+    }
   }
 
-  const { name, sprites, abilities } = pokemonData;
-
   return (
-    <Card
-      style={{ width: "14rem", height: "20rem", boxShadow: "0 0 10px #000" }}
-      bg="light"
-      text="dark"
-      shadow
-    >
-      <Card.Img variant="top" src={sprites.front_default} />
+    <Card style={{ width: "18rem" }} className="mx-auto mb-4">
+      <Card.Img variant="top" src={image} />
       <Card.Body>
-        <Link to={`/${name}`}>{name}</Link>
-        <Card.Text as="div">
-          <ul>
-            {abilities.map((ability) => (
-              <li key={ability.ability.name}>{ability.ability.name}</li>
-            ))}
-          </ul>
-        </Card.Text>
+        <Card.Title>{name}</Card.Title>
+        <Button variant="primary" onClick={handleToggleFavorite}>
+          {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+        </Button>
+        <Link to={`/pokemon/${name}`} className="btn btn-secondary mx-3">
+          Details
+        </Link>
       </Card.Body>
     </Card>
   );
 }
 
-export { PokemonCard };
+export default PokemonCard;
