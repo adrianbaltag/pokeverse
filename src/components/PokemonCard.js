@@ -24,6 +24,7 @@
 // }
 import React, { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
+import { Link } from "react-router-dom";
 
 function PokemonCard(props) {
   const [pokemonData, setPokemonData] = useState(null);
@@ -46,7 +47,7 @@ function PokemonCard(props) {
     <Card style={{ width: "18rem" }} bg="dark" text="light" shadow>
       <Card.Img variant="top" src={sprites.front_default} />
       <Card.Body>
-        <Card.Title>{name}</Card.Title>
+        <Link to={`/${name}`}>{name}</Link>
         <Card.Text as="div">
           <ul>
             {abilities.map((ability) => (
